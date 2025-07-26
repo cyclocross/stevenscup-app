@@ -18,10 +18,9 @@ interface SeriesFormProps {
     season: string
     description: string
   }
-  seriesId?: number
 }
 
-export function SeriesForm({ initialData, seriesId }: SeriesFormProps) {
+export function SeriesForm({ initialData }: SeriesFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
@@ -44,7 +43,7 @@ export function SeriesForm({ initialData, seriesId }: SeriesFormProps) {
       } else {
         toast.error(result.error || "Failed to create series")
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred")
     } finally {
       setIsLoading(false)

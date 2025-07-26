@@ -45,7 +45,7 @@ export function ContestForm({ seriesId }: ContestFormProps) {
       } else {
         toast.error(result.error || "Failed to create contest")
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred")
     } finally {
       setIsLoading(false)

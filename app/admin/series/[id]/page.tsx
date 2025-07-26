@@ -5,14 +5,9 @@ import { ArrowLeft, Calendar, Users, Plus } from "lucide-react"
 import { getSeriesById } from "@/lib/actions/series"
 import { notFound } from "next/navigation"
 
-interface SeriesDetailPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
-  const seriesId = Number.parseInt(params.id)
+export default async function SeriesDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const seriesId = Number.parseInt(id)
   const series = await getSeriesById(seriesId)
 
   if (!series) {

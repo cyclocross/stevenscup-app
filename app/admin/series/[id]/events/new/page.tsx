@@ -5,14 +5,9 @@ import { EventForm } from "@/components/forms/event-form"
 import { getSeriesById } from "@/lib/actions/series"
 import { notFound } from "next/navigation"
 
-interface NewEventPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default async function NewEventPage({ params }: NewEventPageProps) {
-  const seriesId = Number.parseInt(params.id)
+export default async function NewEventPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const seriesId = Number.parseInt(id)
   const series = await getSeriesById(seriesId)
 
   if (!series) {

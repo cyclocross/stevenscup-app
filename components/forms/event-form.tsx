@@ -42,7 +42,7 @@ export function EventForm({ seriesId }: EventFormProps) {
       } else {
         toast.error(result.error || "Failed to create event")
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred")
     } finally {
       setIsLoading(false)
