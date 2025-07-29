@@ -32,9 +32,7 @@ export const contests = pgTable("contests", {
     .references(() => series.id)
     .notNull(),
   name: varchar("name", { length: 255 }).notNull(),
-  ageGroup: varchar("age_group", { length: 50 }),
-  gender: varchar("gender", { length: 10 }),
-  participationPoints: integer("participation_points").default(1),
+  comment: text("comment"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })

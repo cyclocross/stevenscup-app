@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { createContest } from "@/lib/actions/contests"
+import { Textarea } from "@/components/ui/textarea"
 
 interface ContestFormProps {
   seriesId: number
@@ -20,9 +20,7 @@ export function ContestForm({ seriesId }: ContestFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
-    ageGroup: "",
-    gender: "",
-    participationPoints: 1,
+    comment: "",
   })
 
   const router = useRouter()
@@ -35,8 +33,6 @@ export function ContestForm({ seriesId }: ContestFormProps) {
       const result = await createContest({
         ...formData,
         seriesId,
-        ageGroup: formData.ageGroup || null,
-        gender: formData.gender || null,
       })
 
       if (result.success) {
@@ -69,49 +65,15 @@ export function ContestForm({ seriesId }: ContestFormProps) {
               required
             />
           </div>
-
           <div className="space-y-2">
-            <Label htmlFor="ageGroup">Age Group</Label>
-            <Select onValueChange={(value) => setFormData({ ...formData, ageGroup: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select age group (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Junior">Junior (U19)</SelectItem>
-                <SelectItem value="U23">U23</SelectItem>
-                <SelectItem value="Elite">Elite</SelectItem>
-                <SelectItem value="Masters">Masters (40+)</SelectItem>
-                <SelectItem value="Veterans">Veterans (50+)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="gender">Gender</Label>
-            <Select onValueChange={(value) => setFormData({ ...formData, gender: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select gender (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Men">Men</SelectItem>
-                <SelectItem value="Women">Women</SelectItem>
-                <SelectItem value="Mixed">Mixed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="participationPoints">Participation Points</Label>
-            <Input
-              id="participationPoints"
-              type="number"
-              min="0"
-              value={formData.participationPoints}
-              onChange={(e) => setFormData({ ...formData, participationPoints: Number.parseInt(e.target.value) || 0 })}
-              required
+            <Label htmlFor="comment">Comment</Label>
+            <Textarea
+              id="comment"
+              value={formData.comment}
+              onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
+              placeholder="Add any notes or details about this contest (optional)"
             />
           </div>
-
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Creating..." : "Create Contest"}
           </Button>

@@ -98,9 +98,7 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
               <CardHeader>
                 <CardTitle className="text-base">{contest.name}</CardTitle>
                 <CardDescription>
-                  {contest.ageGroup && `${contest.ageGroup} • `}
-                  {contest.gender && `${contest.gender} • `}
-                  {contest.participationPoints} participation points
+                  {contest.comment && <>{contest.comment}</>}
                 </CardDescription>
               </CardHeader>
               <CardContent>
