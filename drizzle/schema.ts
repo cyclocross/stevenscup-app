@@ -115,3 +115,27 @@ export const contests = pgTable("contests", {
 		name: "contests_series_id_series_id_fk"
 	}),
 ]);
+
+export const adminUsers = pgTable("admin_users", {
+	id: serial().primaryKey().notNull(),
+	email: varchar({ length: 255 }).notNull().unique(),
+	passwordHash: varchar({ length: 255 }).notNull(),
+	role: varchar({ length: 50 }).default('admin'),
+	isActive: boolean().default(true),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+});
+
+export const adminSessions = pgTable("admin_sessions", {
+	id: serial().primaryKey().notNull(),
+	userId: integer("user_id").notNull(),
+	sessionToken: varchar({ length: 255 }).notNull().unique(),
+	expiresAt: timestamp("expires_at", { mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+}, (table) => [
+	foreignKey({
+		columns: [table.userId],
+		foreignColumns: [adminUsers.id],
+		name: "admin_sessions_user_id_admin_users_id_fk"
+	}),
+]);

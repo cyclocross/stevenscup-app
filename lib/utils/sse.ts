@@ -37,7 +37,6 @@ function getGlobalSSEHub(): SSEHub {
 const encoder = new TextEncoder()
 
 export function registerSSEClient(writer: WritableStreamDefaultWriter<Uint8Array>) {
-  // eslint-disable-next-line no-console
   console.log(`Registering SSE client ${writer}`)
   const hub = getGlobalSSEHub()
   const client: SSEClient = { send: (payload) => writer.write(payload) }
@@ -62,8 +61,6 @@ function forwardLocally(event: BroadcastEvent) {
   const stale: SSEClient[] = []
   hub.clients.forEach((client) => {
     try {
-      // eslint-disable-next-line no-console
-      console.log(`Sending SSE event to client: ${event.type}`, event.data)
       // Allow sync or async senders
       const maybePromise = client.send(payload)
       if (maybePromise && typeof (maybePromise as Promise<void>).then === 'function') {

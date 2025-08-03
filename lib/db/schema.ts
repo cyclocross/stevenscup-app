@@ -97,6 +97,28 @@ export const participations = pgTable("participations", {
   uniqueParticipation: unique().on(table.participantId, table.raceId),
 }))
 
+// Admin Users table
+export const adminUsers = pgTable("admin_users", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  role: varchar("role", { length: 50 }).notNull().default("admin"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+})
+
+// Admin Sessions table
+export const adminSessions = pgTable("admin_sessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .references(() => adminUsers.id)
+    .notNull(),
+  sessionToken: varchar("session_token", { length: 255 }).notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+})
+
 // Relations
 export const seriesRelations = relations(series, ({ many }) => ({
   events: many(events),
@@ -148,5 +170,17 @@ export const participationsRelations = relations(participations, ({ one }) => ({
   race: one(races, {
     fields: [participations.raceId],
     references: [races.id],
+  }),
+}))
+
+// Admin relations
+export const adminUsersRelations = relations(adminUsers, ({ many }) => ({
+  sessions: many(adminSessions),
+}))
+
+export const adminSessionsRelations = relations(adminSessions, ({ one }) => ({
+  user: one(adminUsers, {
+    fields: [adminSessions.userId],
+    references: [adminUsers.id],
   }),
 }))

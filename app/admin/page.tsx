@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, Users, Plus } from "lucide-react"
+import { Calendar, Users, Plus } from "lucide-react"
 import { getAllSeries } from "@/lib/actions/series"
 import { SeriesActions } from "@/components/series-actions"
 
@@ -10,19 +10,10 @@ export default async function AdminPage() {
   const allSeries = await getAllSeries()
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-md">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/">
-          <Button variant="ghost" size="sm">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <h1 className="text-2xl font-bold">Admin Panel</h1>
-      </div>
-
+    <div className="max-w-4xl mx-auto">
       <div className="space-y-4 mb-6">
         <Link href="/admin/series/new">
-          <Button className="w-full" size="lg">
+          <Button className="w-full sm:w-auto" size="lg">
             <Plus className="h-4 w-4 mr-2" />
             Create New Series
           </Button>
