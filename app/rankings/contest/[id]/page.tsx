@@ -12,6 +12,9 @@ interface ContestDetailPageProps {
   }>
 }
 
+// Force revalidation every 30 seconds for live rankings
+export const revalidate = 30
+
 export default async function ContestDetailPage({ params }: ContestDetailPageProps) {
   const { id } = await params
   const contestId = parseInt(id)

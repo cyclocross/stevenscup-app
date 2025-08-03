@@ -12,6 +12,9 @@ interface RaceRankingsPageProps {
   }>
 }
 
+// Force revalidation every 30 seconds for live rankings
+export const revalidate = 30
+
 export default async function RaceRankingsPage({ params }: RaceRankingsPageProps) {
   const { id } = await params
   const raceId = parseInt(id)

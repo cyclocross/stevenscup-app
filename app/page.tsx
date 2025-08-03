@@ -5,6 +5,9 @@ import { getAllSeriesWithRankings } from "@/lib/actions/series"
 import { Archive, Settings, Trophy } from "lucide-react"
 import Link from "next/link"
 
+// Force revalidation every 30 seconds for live rankings
+export const revalidate = 30
+
 export default async function HomePage() {
   const allSeries = await getAllSeriesWithRankings()
 
