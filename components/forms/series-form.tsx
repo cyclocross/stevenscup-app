@@ -21,6 +21,7 @@ interface SeriesFormProps {
     season: string
     description?: string | null
     status?: string | null
+    participantsUrl?: string | null
   }
   seriesId?: number
 }
@@ -32,6 +33,7 @@ export function SeriesForm({ mode, initialData, seriesId }: SeriesFormProps) {
     season: initialData?.season || new Date().getFullYear().toString(),
     description: initialData?.description || "",
     status: initialData?.status || "scheduled",
+    participantsUrl: initialData?.participantsUrl || "",
   })
 
   const router = useRouter()
@@ -127,6 +129,20 @@ export function SeriesForm({ mode, initialData, seriesId }: SeriesFormProps) {
               placeholder="Brief description of the series..."
               rows={3}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="participantsUrl">Default RaceResult Participants URL</Label>
+            <Input
+              id="participantsUrl"
+              type="url"
+              value={formData.participantsUrl}
+              onChange={(e) => setFormData({ ...formData, participantsUrl: e.target.value })}
+              placeholder="https://my4.raceresult.com/.../RRPublish/data/list?..."
+            />
+            <p className="text-sm text-gray-500">
+              Optional: Default URL for importing participants from RaceResult (can be overridden per contest)
+            </p>
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>

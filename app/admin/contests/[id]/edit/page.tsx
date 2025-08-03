@@ -61,7 +61,11 @@ export default async function EditContestPage({ params }: EditContestPageProps) 
         <CardContent>
           <ContestForm 
             mode="edit" 
-            initialData={contest}
+            initialData={{
+              ...contest,
+              comment: contest.comment || undefined,
+              participantsUrl: contest.participantsUrl || undefined
+            }}
             contestId={contestId}
             seriesId={contest.seriesId}
           />

@@ -8,6 +8,7 @@ export const series = pgTable("series", {
   season: varchar("season", { length: 10 }).notNull(),
   description: text("description"),
   status: varchar("status", { length: 20 }).default("scheduled"), // scheduled, ongoing, finished
+  participantsUrl: text("participants_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
@@ -33,7 +34,7 @@ export const events = pgTable("events", {
 export const contests = pgTable("contests", {
   id: serial("id").primaryKey(),
   seriesId: integer("series_id")
-    .references(() => series.id)
+    .references(() => series.id, { onDelete: "cascade" })
     .notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   duration: integer("duration_minutes"),
@@ -43,6 +44,11 @@ export const contests = pgTable("contests", {
   participationPoints: integer("participation_points").default(1),
   group: varchar("group", { length: 255 }),
   comment: text("comment"),
+  participantsUrl: text("participants_url"),
+  // externalId: varchar("external_id", { length: 100 }),
+  // category: varchar("category", { length: 255 }),
+  // ageRange: varchar("age_range", { length: 100 }),
+  // participantCount: integer("participant_count"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
@@ -54,7 +60,7 @@ export const races = pgTable("races", {
     .references(() => events.id)
     .notNull(),
   contestId: integer("contest_id")
-    .references(() => contests.id)
+    .references(() => contests.id, { onDelete: "cascade" })
     .notNull(),
   startTime: time("start_time"),
   status: varchar("status", { length: 20 }).default("scheduled"), // scheduled, ongoing, completed
@@ -66,7 +72,7 @@ export const races = pgTable("races", {
 export const participants = pgTable("participants", {
   id: serial("id").primaryKey(),
   contestId: integer("contest_id")
-    .references(() => contests.id)
+    .references(() => contests.id, { onDelete: "cascade" })
     .notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   birthYear: integer("birth_year").notNull(),
@@ -84,10 +90,10 @@ export const participants = pgTable("participants", {
 export const participations = pgTable("participations", {
   id: serial("id").primaryKey(),
   participantId: integer("participant_id")
-    .references(() => participants.id)
+    .references(() => participants.id, { onDelete: "cascade" })
     .notNull(),
   raceId: integer("race_id")
-    .references(() => races.id)
+    .references(() => races.id, { onDelete: "cascade" })
     .notNull(),
   registered: boolean("registered").default(false),
   started: boolean("started").default(false),

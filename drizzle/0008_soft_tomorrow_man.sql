@@ -1,0 +1,1 @@
+ALTER TABLE "series" ADD COLUMN "participants_url" text;

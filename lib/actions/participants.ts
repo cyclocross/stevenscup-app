@@ -69,11 +69,16 @@ export async function deleteParticipant(id: number) {
       return { error: "Participant not found" }
     }
 
+    // First delete all participations for this participant
+    await db.delete(participations).where(eq(participations.participantId, id))
+
+    // Then delete the participant
     await db.delete(participants).where(eq(participants.id, id))
 
     revalidatePath(`/admin/contests/${participant.data.contestId}`)
     return { error: null }
-  } catch {
+  } catch (error) {
+    console.error("Error deleting participant:", error)
     return { error: "Failed to delete participant" }
   }
 }

@@ -21,7 +21,7 @@ interface EventFormProps {
     location: string
     club: string
     seriesId: number
-    registrationUrl?: string
+    registrationUrl?: string | null
   }
   eventId?: number
 }
@@ -133,7 +133,7 @@ export function EventForm({ mode, seriesId, initialData, eventId }: EventFormPro
             <Input
               id="registrationUrl"
               type="url"
-              value={formData.registrationUrl}
+              value={formData.registrationUrl || ""}
               onChange={(e) => setFormData({ ...formData, registrationUrl: e.target.value })}
               placeholder="https://example.com/register"
             />

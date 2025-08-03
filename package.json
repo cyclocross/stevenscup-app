@@ -10,7 +10,9 @@
     "db:migrate": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "setup:admin": "node scripts/setup-admin.js",
-    "migrate:remove-username": "node scripts/migrate-remove-username.js"
+    "migrate:remove-username": "node scripts/migrate-remove-username.js",
+    "test:import": "node scripts/test-registration-import.js",
+    "parse:raceresult": "node scripts/parse-raceresult-data.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",

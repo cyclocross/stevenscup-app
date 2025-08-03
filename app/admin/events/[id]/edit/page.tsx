@@ -61,7 +61,10 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
         <CardContent>
           <EventForm 
             mode="edit" 
-            initialData={event}
+            initialData={{
+              ...event,
+              registrationUrl: event.registrationUrl || undefined
+            }}
             eventId={eventId}
             seriesId={event.seriesId}
           />

@@ -8,13 +8,17 @@ import type { NewEvent } from "@/lib/db"
 
 export async function createEvent(data: Omit<NewEvent, "id" | "createdAt" | "updatedAt">) {
   try {
+    // Convert null values to undefined for the database insert
+    const insertData = {
+      ...data,
+      registrationUrl: data.registrationUrl === null ? undefined : data.registrationUrl,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    
     const [newEvent] = await db
       .insert(events)
-      .values({
-        ...data,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+      .values(insertData)
       .returning()
 
     revalidatePath("/admin/events")
@@ -66,9 +70,16 @@ export async function getEventsBySeriesId(seriesId: number) {
 
 export async function updateEvent(id: number, data: Partial<NewEvent>) {
   try {
+    // Convert null values to undefined for the database update
+    const updateData = {
+      ...data,
+      registrationUrl: data.registrationUrl === null ? undefined : data.registrationUrl,
+      updatedAt: new Date()
+    }
+    
     const [updatedEvent] = await db
       .update(events)
-      .set({ ...data, updatedAt: new Date() })
+      .set(updateData)
       .where(eq(events.id, id))
       .returning()
 

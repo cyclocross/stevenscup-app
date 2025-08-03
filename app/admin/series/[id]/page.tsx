@@ -2,18 +2,19 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, Users, Plus, Clock, CheckCircle, AlertCircle } from "lucide-react"
+import { ArrowLeft, Calendar, Users, Plus, Clock, CheckCircle, AlertCircle, Download } from "lucide-react"
 import { getSeriesById } from "@/lib/actions/series"
 import { notFound } from "next/navigation"
 import { EventActions } from "@/components/event-actions"
 import { ContestActions } from "@/components/contest-actions"
+import { RaceResultImportSection } from "@/components/raceresult-import-section"
 
 export default async function SeriesDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const seriesId = Number.parseInt(id)
-  const series = await getSeriesById(seriesId)
+  const { id } = await params
+  const seriesId = parseInt(id)
 
-  if (!series) {
+  const seriesData = await getSeriesById(seriesId)
+  if (!seriesData) {
     notFound()
   }
 
@@ -26,16 +27,28 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">{series.name}</h1>
+          <h1 className="text-2xl font-bold">{seriesData.name}</h1>
           <div className="flex items-center gap-2">
-            <p className="text-gray-600">{series.season}</p>
+            <p className="text-gray-600">{seriesData.season}</p>
             <Badge 
-              variant={series.status === 'finished' ? 'default' : series.status === 'ongoing' ? 'secondary' : 'outline'}
+              variant={seriesData.status === 'finished' ? 'default' : seriesData.status === 'ongoing' ? 'secondary' : 'outline'}
               className="text-xs"
             >
-              {series.status || 'scheduled'}
+              {seriesData.status || 'scheduled'}
             </Badge>
           </div>
+          {seriesData.participantsUrl && (
+            <div className="mt-2">
+              <a
+                href={seriesData.participantsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-600 hover:text-blue-800 underline"
+              >
+                Default RaceResult Participants
+              </a>
+            </div>
+          )}
         </div>
       </div>
 
@@ -54,14 +67,14 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
           </Link>
         </div>
 
-        {series.events === undefined || series.events.length === 0 ? (
+        {seriesData.events === undefined || seriesData.events.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-gray-500">No events scheduled yet.</p>
             </CardContent>
           </Card>
         ) : (
-          series.events.map((event: { 
+          seriesData.events.map((event: { 
             id: number; 
             name: string; 
             date: string; 
@@ -69,9 +82,9 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
             club: string; 
             seriesId: number; 
             races?: unknown[];
-            registrationUrl?: string;
-            lastImportAt?: string;
-            importStatus?: string;
+            registrationUrl?: string | null;
+            lastImportAt?: Date | null;
+            importStatus?: string | null;
           }) => (
             <Card key={event.id}>
               <CardHeader>
@@ -114,7 +127,7 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
                   {event.lastImportAt && (
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      Last Import: {new Date(event.lastImportAt).toLocaleString()}
+                      Last Import: {event.lastImportAt instanceof Date ? event.lastImportAt.toLocaleString() : new Date(event.lastImportAt).toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -141,7 +154,12 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
                       Races
                     </Button>
                   </Link>
-                  <EventActions event={event} />
+                  <EventActions event={{
+                    ...event,
+                    registrationUrl: event.registrationUrl || undefined,
+                    lastImportAt: event.lastImportAt ? (event.lastImportAt instanceof Date ? event.lastImportAt.toISOString() : event.lastImportAt) : undefined,
+                    importStatus: event.importStatus || undefined
+                  }} />
                 </div>
               </CardContent>
             </Card>
@@ -164,19 +182,42 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
           </Link>
         </div>
 
-        {!series.contests || series.contests.length === 0 ? (
+        {!seriesData.contests || seriesData.contests.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-gray-500">No contests created yet.</p>
             </CardContent>
           </Card>
         ) : (
-          series.contests.map((contest) => (
+          seriesData.contests.map((contest: {
+            id: number;
+            name: string;
+            comment?: string | null;
+            participantsUrl?: string | null;
+            seriesId: number;
+            participants?: Array<{
+              id: number;
+              name: string;
+              bibNumber: number;
+            }>;
+          }) => (
             <Card key={contest.id}>
               <CardHeader>
                 <CardTitle className="text-base">{contest.name}</CardTitle>
                 <CardDescription>
                   {contest.comment && <>{contest.comment}</>}
+                  {contest.participantsUrl && (
+                    <div className="mt-2">
+                      <a
+                        href={contest.participantsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-800 underline"
+                      >
+                        RaceResult Participants
+                      </a>
+                    </div>
+                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -188,6 +229,20 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
                       Participants
                     </Button>
                   </Link>
+                  {contest.participantsUrl && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      onClick={() => {
+                        // TODO: Implement participants import
+                        alert(`Import participants from: ${contest.participantsUrl}`)
+                      }}
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      Import
+                    </Button>
+                  )}
                   <ContestActions contest={contest} />
                 </div>
               </CardContent>
@@ -195,6 +250,18 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
           ))
         )}
       </div>
+
+             {/* Race Result Import Section */}
+       <div className="space-y-4">
+         <div className="flex items-center justify-between">
+           <h2 className="text-lg font-semibold flex items-center gap-2">
+             <Download className="h-5 w-5" />
+             Import Contests from RaceResult
+           </h2>
+         </div>
+         
+         <RaceResultImportSection seriesId={seriesId} participantsUrl={seriesData.participantsUrl} />
+       </div>
     </div>
   )
 }

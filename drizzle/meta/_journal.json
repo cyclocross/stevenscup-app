@@ -10,13 +10,6 @@
       "breakpoints": true
     },
     {
-      "idx": 1,
-      "version": "7",
-      "when": 1754630598962,
-      "tag": "0001_chubby_millenium_guard",
-      "breakpoints": true
-    },
-    {
       "idx": 2,
       "version": "7",
       "when": 1756465977558,
@@ -35,6 +28,34 @@
       "version": "7",
       "when": 1756471854754,
       "tag": "0004_empty_smiling_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1756476542394,
+      "tag": "0005_handy_eddie_brock",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1756477586622,
+      "tag": "0006_classy_scorpion",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1756479119272,
+      "tag": "0007_volatile_susan_delgado",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1756479869975,
+      "tag": "0008_soft_tomorrow_man",
       "breakpoints": true
     }
   ]

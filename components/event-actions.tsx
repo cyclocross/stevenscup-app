@@ -20,9 +20,9 @@ interface Event {
   location: string
   club: string
   seriesId: number
-  registrationUrl?: string
-  lastImportAt?: string
-  importStatus?: string
+  registrationUrl?: string | null
+  lastImportAt?: Date | string | null
+  importStatus?: string | null
 }
 
 interface EventActionsProps {
@@ -76,18 +76,18 @@ export function EventActions({ event }: EventActionsProps) {
           // Update status to done and set last import time
           await updateEvent(event.id, { 
             importStatus: 'done',
-            lastImportAt: new Date().toISOString()
+            lastImportAt: new Date()
           })
           toast.success("Import completed successfully!")
           router.refresh() // Refresh to show updated status
-        } catch (error) {
+        } catch {
           toast.error("Failed to update import status")
         } finally {
           setIsImporting(false)
         }
       }, 3000) // Simulate 3 second import process
       
-    } catch (error) {
+    } catch {
       toast.error("An error occurred while starting import")
       setIsImporting(false)
     }
