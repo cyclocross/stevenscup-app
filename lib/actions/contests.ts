@@ -30,11 +30,7 @@ export async function getContestById(id: number) {
     const contest = await db.query.contests.findFirst({
       where: eq(contests.id, id),
       with: {
-        cyclistContests: {
-          with: {
-            cyclist: true,
-          },
-        },
+        participants: true,
       },
     })
     return contest

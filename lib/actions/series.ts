@@ -55,7 +55,11 @@ export async function getSeriesById(id: number) {
             },
           },
         },
-        contests: true,
+        contests: {
+          with: {
+            participants: true,
+          },
+        },
       },
     })
     return seriesData

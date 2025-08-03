@@ -65,7 +65,8 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
                 <div className="flex gap-2">
                   <Link href={`/admin/events/${event.id}/races`} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full bg-transparent">
-                      Manage Races
+                      <Calendar className="h-4 w-4 mr-1" />
+                      Races
                     </Button>
                   </Link>
                   <EventActions event={event} />
@@ -98,7 +99,7 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
             </CardContent>
           </Card>
         ) : (
-          series.contests.map((contest: { id: number; name: string; comment?: string | null; seriesId: number; cyclistContests?: unknown[] }) => (
+          series.contests.map((contest) => (
             <Card key={contest.id}>
               <CardHeader>
                 <CardTitle className="text-base">{contest.name}</CardTitle>
@@ -107,11 +108,12 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-2">{contest.cyclistContests?.length || 0} cyclists registered</p>
+                <p className="text-sm text-gray-600 mb-2">{contest.participants?.length || 0} participants registered</p>
                 <div className="flex gap-2">
-                  <Link href={`/admin/contests/${contest.id}`} className="flex-1">
+                  <Link href={`/admin/contests/${contest.id}/participants`} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full bg-transparent">
-                      Manage Contest
+                      <Users className="h-4 w-4 mr-1" />
+                      Participants
                     </Button>
                   </Link>
                   <ContestActions contest={contest} />
