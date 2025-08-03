@@ -22,6 +22,9 @@ export const events = pgTable("events", {
   date: date("date").notNull(),
   location: varchar("location", { length: 255 }).notNull(),
   club: varchar("club", { length: 255 }).notNull(),
+  registrationUrl: text("registration_url"),
+  lastImportAt: timestamp("last_import_at"),
+  importStatus: varchar("import_status", { length: 20 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })

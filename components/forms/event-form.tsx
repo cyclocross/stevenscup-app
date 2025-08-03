@@ -21,6 +21,7 @@ interface EventFormProps {
     location: string
     club: string
     seriesId: number
+    registrationUrl?: string
   }
   eventId?: number
 }
@@ -32,6 +33,7 @@ export function EventForm({ mode, seriesId, initialData, eventId }: EventFormPro
     date: initialData?.date || "",
     location: initialData?.location || "",
     club: initialData?.club || "",
+    registrationUrl: initialData?.registrationUrl || "",
   })
 
   const router = useRouter()
@@ -124,6 +126,20 @@ export function EventForm({ mode, seriesId, initialData, eventId }: EventFormPro
               placeholder="e.g., Local Cycling Club"
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="registrationUrl">External Registration URL</Label>
+            <Input
+              id="registrationUrl"
+              type="url"
+              value={formData.registrationUrl}
+              onChange={(e) => setFormData({ ...formData, registrationUrl: e.target.value })}
+              placeholder="https://example.com/register"
+            />
+            <p className="text-sm text-gray-500">
+              Optional: Link to external registration website
+            </p>
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>

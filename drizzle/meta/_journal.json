@@ -15,6 +15,27 @@
       "when": 1754630598962,
       "tag": "0001_chubby_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756465977558,
+      "tag": "0002_cloudy_layla_miller",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756466046485,
+      "tag": "0003_unique_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1756471854754,
+      "tag": "0004_empty_smiling_tiger",
+      "breakpoints": true
     }
   ]
 }

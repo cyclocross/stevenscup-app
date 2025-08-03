@@ -90,3 +90,23 @@ export async function deleteEvent(id: number) {
     return { success: false, error: "Failed to delete event" }
   }
 }
+
+export async function resetImportStatusForEvent(id: number) {
+  try {
+    const [updatedEvent] = await db
+      .update(events)
+      .set({ 
+        importStatus: null,
+        lastImportAt: null,
+        updatedAt: new Date() 
+      })
+      .where(eq(events.id, id))
+      .returning()
+
+    revalidatePath("/admin/events")
+    return { success: true, data: updatedEvent }
+  } catch (error) {
+    console.error("Error resetting import status:", error)
+    return { success: false, error: "Failed to reset import status" }
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "events" ALTER COLUMN "import_status" DROP DEFAULT;

@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, Users, Plus } from "lucide-react"
+import { ArrowLeft, Calendar, Users, Plus, Clock, CheckCircle, AlertCircle } from "lucide-react"
 import { getSeriesById } from "@/lib/actions/series"
 import { notFound } from "next/navigation"
 import { EventActions } from "@/components/event-actions"
@@ -61,13 +61,76 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
             </CardContent>
           </Card>
         ) : (
-          series.events.map((event: { id: number; name: string; date: string; location: string; club: string; seriesId: number; races?: unknown[] }) => (
+          series.events.map((event: { 
+            id: number; 
+            name: string; 
+            date: string; 
+            location: string; 
+            club: string; 
+            seriesId: number; 
+            races?: unknown[];
+            registrationUrl?: string;
+            lastImportAt?: string;
+            importStatus?: string;
+          }) => (
             <Card key={event.id}>
               <CardHeader>
                 <CardTitle className="text-base">{event.name}</CardTitle>
                 <CardDescription>
                   {new Date(event.date).toLocaleDateString()} • {event.location} • {event.club}
                 </CardDescription>
+                {event.registrationUrl && (
+                  <div className="mt-2">
+                    <a 
+                      href={event.registrationUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:text-blue-800 underline"
+                    >
+                      External Registration Site
+                    </a>
+                  </div>
+                )}
+                <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    Import Status: 
+                    {event.importStatus === 'done' ? (
+                      <Badge variant="default" className="ml-1 flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3" />
+                        done
+                      </Badge>
+                    ) : event.importStatus === 'pending' ? (
+                      <Badge variant="secondary" className="ml-1 flex items-center gap-1">
+                        <Clock className="h-3 w-3 animate-pulse" />
+                        pending
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="ml-1 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        none
+                      </Badge>
+                    )}
+                  </span>
+                  {event.lastImportAt && (
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      Last Import: {new Date(event.lastImportAt).toLocaleString()}
+                    </span>
+                  )}
+                </div>
+                {event.importStatus === 'pending' && (
+                  <div className="mt-2">
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
+                      <div className="bg-blue-600 h-1.5 rounded-full animate-pulse" style={{ width: '100%' }}></div>
+                    </div>
+                    <p className="text-xs text-blue-600 mt-1">Import in progress...</p>
+                  </div>
+                )}
+                {!event.registrationUrl && (
+                  <div className="mt-2">
+                    <p className="text-xs text-gray-500 italic">No registration URL configured</p>
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-2">{event.races?.length || 0} races scheduled</p>
