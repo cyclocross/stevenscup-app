@@ -13,10 +13,11 @@ import {
     moveParticipationUp,
     removeParticipantFromRace
 } from "@/lib/actions/participations"
-import { ArrowDown, ArrowUp, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react"
+import { ArrowDown, ArrowUp, MoreHorizontal, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
+import { StatusIcon } from "@/components/ui/status-icon"
 
 interface Participation {
     id: number
@@ -115,10 +116,17 @@ export function ParticipationActions({ participation }: ParticipationActionsProp
         }
     }
 
+    const getNextStatus = () => {
+        if (participation.finished) return "registered"
+        if (participation.started) return "finished"
+        if (participation.registered) return "started"
+        return "registered"
+    }
+
     const getStatusText = () => {
-        if (participation.finished) return "Finished"
-        if (participation.started) return "Started"
-        if (participation.registered) return "Registered"
+        if (participation.finished) return "Registered"
+        if (participation.started) return "Finished"
+        if (participation.registered) return "Started"
         return "Pending"
     }
 
@@ -130,9 +138,9 @@ export function ParticipationActions({ participation }: ParticipationActionsProp
                 size="sm"
                 onClick={handleCycleStatus}
                 disabled={isCycling}
-                title={`Cycle status: ${getStatusText()}`}
+                title={`Move to: ${getStatusText()}`}
             >
-                <RotateCcw className="h-4 w-4" />
+                <StatusIcon status={getNextStatus()} />
             </Button>
 
             {/* Move Up/Down Buttons (only for finished participations) */}

@@ -8,8 +8,8 @@ export default function HomePage() {
     <div className="container mx-auto px-4 py-8 max-w-md">
       <div className="text-center mb-8">
         <Trophy className="mx-auto h-16 w-16 text-orange-600 mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Cyclocross Rankings</h1>
-        <p className="text-gray-600">Manage competition series and track cyclist performance</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Stevens Cup Cyclocross Provisional Rankings</h1>
+        <p className="text-gray-600">Live provisional rankings for the Stevens Cup Cyclocross series</p>
       </div>
 
       <div className="space-y-4">

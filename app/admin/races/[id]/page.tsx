@@ -7,6 +7,7 @@ import { getParticipationsByRace, getAvailableParticipantsForRace, pointsForPart
 import { notFound } from "next/navigation"
 import { ParticipantAssignment } from "@/components/participant-assignment"
 import { ParticipationActions } from "@/components/participation-actions"
+import { StatusIcon } from "@/components/ui/status-icon"
 
 export default async function RaceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,7 +20,7 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
 
   const participationsResult = await getParticipationsByRace(raceId)
   const availableParticipantsResult = await getAvailableParticipantsForRace(raceId, race.contestId)
-  
+
   const participations = participationsResult.data || []
   const availableParticipants = availableParticipantsResult.data || []
 
@@ -101,7 +102,7 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ParticipantAssignment 
+          <ParticipantAssignment
             raceId={raceId}
             contestId={race.contestId}
             availableParticipants={availableParticipants}
@@ -116,50 +117,50 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
           {participations.filter(p => p.finished).length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                  Finished ({participations.filter(p => p.finished).length})
-                </CardTitle>
+                              <CardTitle className="text-lg flex items-center gap-2">
+                <StatusIcon status="finished" />
+                Finished ({participations.filter(p => p.finished).length})
+              </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                                         <thead className="bg-gray-50">
-                       <tr>
-                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pos</th>
-                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bib</th>
-                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Club</th>
-                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
-                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                       </tr>
-                     </thead>
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pos</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bib</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Club</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {participations
                         .filter(p => p.finished)
                         .sort((a, b) => (a.position || 0) - (b.position || 0))
                         .map((participation) => (
-                                                 <tr key={participation.id} className="hover:bg-gray-50">
-                           <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                             {participation.position || '-'}
-                           </td>
-                           <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                             {participation.participant.bibNumber}
-                           </td>
-                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                             {participation.participant.name}
-                           </td>
-                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                             {participation.participant.club || '-'}
-                           </td>
-                           <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                             {pointsForParticipation(participation)}
-                           </td>
-                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                             <ParticipationActions participation={participation} />
-                           </td>
-                         </tr>
-                      ))}
+                          <tr key={participation.id} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {participation.position || '-'}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {participation.participant.bibNumber}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                              {participation.participant.name}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              {participation.participant.club || '-'}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {pointsForParticipation(participation)}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              <ParticipationActions participation={participation} />
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -171,10 +172,10 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
           {participations.filter(p => p.started && !p.finished).length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                  Started ({participations.filter(p => p.started && !p.finished).length})
-                </CardTitle>
+                              <CardTitle className="text-lg flex items-center gap-2">
+                <StatusIcon status="started" />
+                Started ({participations.filter(p => p.started && !p.finished).length})
+              </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -193,24 +194,24 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
                         .filter(p => p.started && !p.finished)
                         .sort((a, b) => a.participant.bibNumber - b.participant.bibNumber)
                         .map((participation) => (
-                        <tr key={participation.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {participation.participant.bibNumber}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                            {participation.participant.name}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {participation.participant.club || '-'}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {pointsForParticipation(participation)}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            <ParticipationActions participation={participation} />
-                          </td>
-                        </tr>
-                      ))}
+                          <tr key={participation.id} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {participation.participant.bibNumber}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                              {participation.participant.name}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              {participation.participant.club || '-'}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {pointsForParticipation(participation)}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              <ParticipationActions participation={participation} />
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -222,10 +223,10 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
           {participations.filter(p => p.registered && !p.started && !p.finished).length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-                  Registered ({participations.filter(p => p.registered && !p.started && !p.finished).length})
-                </CardTitle>
+                              <CardTitle className="text-lg flex items-center gap-2">
+                <StatusIcon status="registered" />
+                Registered ({participations.filter(p => p.registered && !p.started && !p.finished).length})
+              </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -244,24 +245,24 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
                         .filter(p => p.registered && !p.started && !p.finished)
                         .sort((a, b) => a.participant.bibNumber - b.participant.bibNumber)
                         .map((participation) => (
-                        <tr key={participation.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {participation.participant.bibNumber}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                            {participation.participant.name}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {participation.participant.club || '-'}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {pointsForParticipation(participation)}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            <ParticipationActions participation={participation} />
-                          </td>
-                        </tr>
-                      ))}
+                          <tr key={participation.id} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {participation.participant.bibNumber}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                              {participation.participant.name}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              {participation.participant.club || '-'}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {pointsForParticipation(participation)}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              <ParticipationActions participation={participation} />
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>

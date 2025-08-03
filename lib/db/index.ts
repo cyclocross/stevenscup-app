@@ -17,3 +17,5 @@ export type Contest = typeof schema.contests.$inferSelect
 export type NewContest = typeof schema.contests.$inferInsert
 export type Race = typeof schema.races.$inferSelect
 export type NewRace = typeof schema.races.$inferInsert
+export type Participant = typeof schema.participants.$inferSelect
+export type NewParticipant = typeof schema.participants.$inferInsert
