@@ -4,6 +4,7 @@ import { db } from "@/lib/db"
 import { participants, participations } from "@/lib/db/schema"
 import { and, eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
+import { notifyRaceUpdate } from "@/lib/utils/sse"
 
 export type Participation = typeof participations.$inferSelect
 export type NewParticipation = typeof participations.$inferInsert
@@ -88,6 +89,10 @@ export async function assignParticipantToRace(participantId: number, raceId: num
             .returning()
 
         revalidatePath(`/admin/races/${raceId}`)
+        
+        // Notify SSE clients of the update
+        await notifyRaceUpdate(raceId)
+        
         return { data: result[0], error: null }
     } catch {
         return { data: null, error: "Failed to assign participant to race" }
@@ -104,6 +109,10 @@ export async function removeParticipantFromRace(participantId: number, raceId: n
             ))
 
         revalidatePath(`/admin/races/${raceId}`)
+        
+        // Notify SSE clients of the update
+        await notifyRaceUpdate(raceId)
+        
         return { error: null }
     } catch {
         return { error: "Failed to remove participant from race" }
@@ -119,6 +128,12 @@ export async function updateParticipation(participationId: number, data: Partial
             .returning()
 
         revalidatePath(`/admin/races/${result[0]?.raceId}`)
+        
+        // Notify SSE clients of the update
+        if (result[0]?.raceId) {
+          await notifyRaceUpdate(result[0].raceId)
+        }
+        
         return { data: result[0], error: null }
     } catch {
         return { data: null, error: "Failed to update participation" }
@@ -192,6 +207,12 @@ export async function cycleParticipationStatus(participationId: number) {
         }
 
         revalidatePath(`/admin/races/${result[0]?.raceId}`)
+        
+        // Notify SSE clients of the update
+        if (result[0]?.raceId) {
+          await notifyRaceUpdate(result[0].raceId)
+        }
+        
         return { data: result[0], error: null }
     } catch {
         return { data: null, error: "Failed to cycle participation status" }
@@ -248,6 +269,10 @@ export async function moveParticipationUp(participationId: number) {
             .where(eq(participations.id, participationId))
 
         revalidatePath(`/admin/races/${current.raceId}`)
+        
+        // Notify SSE clients of the update
+        await notifyRaceUpdate(current.raceId)
+        
         return { data: current, error: null }
     } catch {
         return { data: null, error: "Failed to move participation up" }
@@ -304,6 +329,10 @@ export async function moveParticipationDown(participationId: number) {
             .where(eq(participations.id, participationId))
 
         revalidatePath(`/admin/races/${current.raceId}`)
+        
+        // Notify SSE clients of the update
+        await notifyRaceUpdate(current.raceId)
+        
         return { data: current, error: null }
     } catch {
         return { data: null, error: "Failed to move participation down" }
@@ -335,6 +364,9 @@ export async function reorderFinishedParticipations(raceId: number) {
             }
         }
 
+        // Notify SSE clients of the update
+        await notifyRaceUpdate(raceId)
+        
         return { error: null }
     } catch {
         return { error: "Failed to reorder finished participations" }

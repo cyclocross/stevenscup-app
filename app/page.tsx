@@ -4,6 +4,7 @@ import { getContestStatistics } from "@/lib/actions/rankings"
 import { getAllSeriesWithRankings } from "@/lib/actions/series"
 import { Archive, Settings, Trophy } from "lucide-react"
 import Link from "next/link"
+import { LiveUpdates } from "@/components/live-updates"
 
 // Force revalidation every 30 seconds for live rankings
 export const revalidate = 30
@@ -27,7 +28,8 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="text-center mb-8">
         <Trophy className="mx-auto h-16 w-16 text-orange-600 mb-4" />
@@ -180,6 +182,8 @@ export default async function HomePage() {
           )}
         </div>
       )}
-    </div>
+      </div>
+      <LiveUpdates />
+    </>
   )
 }
