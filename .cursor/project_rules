@@ -1,0 +1,21 @@
+# Stevens Cup Cyclocross App - Project Rules
+
+## Context
+This is a cyclocross competition rankings app using Next.js 15, TypeScript, Drizzle ORM, and Neon database. The design is mobile-first for race staff use.
+
+## Key Entities
+The app follows this hierarchy: Series → Events → Contests → Races
+
+## Technology Stack
+- Next.js 15
+- TypeScript
+- Drizzle ORM
+- Neon database
+- Mobile-first design
+
+## Development Guidelines
+- Focus on mobile-first design for race staff
+- Follow the entity hierarchy: Series → Events → Contests → Races
+- Use TypeScript for type safety
+- Leverage Drizzle ORM for database operations
+- Ensure responsive design for mobile devices 
