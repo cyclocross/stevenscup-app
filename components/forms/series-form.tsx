@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { createSeries, updateSeries } from "@/lib/actions/series"
@@ -19,6 +20,7 @@ interface SeriesFormProps {
     name: string
     season: string
     description?: string | null
+    status?: string | null
   }
   seriesId?: number
 }
@@ -29,6 +31,7 @@ export function SeriesForm({ mode, initialData, seriesId }: SeriesFormProps) {
     name: initialData?.name || "",
     season: initialData?.season || new Date().getFullYear().toString(),
     description: initialData?.description || "",
+    status: initialData?.status || "scheduled",
   })
 
   const router = useRouter()
@@ -96,6 +99,23 @@ export function SeriesForm({ mode, initialData, seriesId }: SeriesFormProps) {
               placeholder="e.g., 2024"
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <Select
+              value={formData.status}
+              onValueChange={(value) => setFormData({ ...formData, status: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="scheduled">Scheduled</SelectItem>
+                <SelectItem value="ongoing">Ongoing</SelectItem>
+                <SelectItem value="finished">Finished</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

@@ -6,14 +6,14 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 interface SeriesDetailPageProps {
-  params: Promise<{
-    id: string
-  }>
+    params: Promise<{
+        id: string
+    }>
 }
 
 export default async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
-  const { id } = await params
-  const seriesId = parseInt(id)
+    const { id } = await params
+    const seriesId = parseInt(id)
 
     if (isNaN(seriesId)) {
         notFound()
@@ -28,12 +28,12 @@ export default async function SeriesDetailPage({ params }: SeriesDetailPageProps
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="mb-6">
-                <Link
-                    href="/rankings"
-                    className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Rankings
+                        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+        >
+                              <ArrowLeft className="h-4 w-4" />
+          Back to Live Rankings
                 </Link>
 
                 <div className="text-center mb-8">
@@ -101,7 +101,7 @@ export default async function SeriesDetailPage({ params }: SeriesDetailPageProps
                                                 </div>
                                                 {index < 3 && (
                                                     <Medal className={`h-6 w-6 ${index === 0 ? 'text-yellow-500' :
-                                                            index === 1 ? 'text-gray-400' : 'text-orange-600'
+                                                        index === 1 ? 'text-gray-400' : 'text-orange-600'
                                                         }`} />
                                                 )}
                                             </div>

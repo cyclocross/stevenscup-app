@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Calendar, Users, Plus } from "lucide-react"
 import { getAllSeries } from "@/lib/actions/series"
 import { SeriesActions } from "@/components/series-actions"
@@ -45,7 +46,15 @@ export default async function AdminPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>{series.name}</span>
-                  <span className="text-sm font-normal text-gray-500">{series.season}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-normal text-gray-500">{series.season}</span>
+                    <Badge 
+                      variant={series.status === 'finished' ? 'default' : series.status === 'ongoing' ? 'secondary' : 'outline'}
+                      className="text-xs"
+                    >
+                      {series.status || 'scheduled'}
+                    </Badge>
+                  </div>
                 </CardTitle>
                 <CardDescription>{series.description}</CardDescription>
               </CardHeader>

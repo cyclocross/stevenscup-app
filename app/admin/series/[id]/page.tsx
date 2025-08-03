@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Calendar, Users, Plus } from "lucide-react"
 import { getSeriesById } from "@/lib/actions/series"
 import { notFound } from "next/navigation"
@@ -26,7 +27,15 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
         </Link>
         <div>
           <h1 className="text-2xl font-bold">{series.name}</h1>
-          <p className="text-gray-600">{series.season}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-gray-600">{series.season}</p>
+            <Badge 
+              variant={series.status === 'finished' ? 'default' : series.status === 'ongoing' ? 'secondary' : 'outline'}
+              className="text-xs"
+            >
+              {series.status || 'scheduled'}
+            </Badge>
+          </div>
         </div>
       </div>
 

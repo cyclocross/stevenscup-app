@@ -7,6 +7,7 @@ export const series = pgTable("series", {
   name: varchar("name", { length: 255 }).notNull(),
   season: varchar("season", { length: 10 }).notNull(),
   description: text("description"),
+  status: varchar("status", { length: 20 }).default("scheduled"), // scheduled, ongoing, finished
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })

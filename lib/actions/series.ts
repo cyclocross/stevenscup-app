@@ -5,6 +5,7 @@ import { series } from "@/lib/db/schema"
 import { eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import type { NewSeries } from "@/lib/db"
+import { getAllSeriesRankings } from "./rankings"
 
 export async function createSeries(data: Omit<NewSeries, "id" | "createdAt" | "updatedAt">) {
   try {
@@ -37,6 +38,35 @@ export async function getAllSeries() {
     return allSeries
   } catch (error) {
     console.error("Error fetching series:", error)
+    return []
+  }
+}
+
+export async function getAllSeriesWithRankings() {
+  try {
+    const allSeries = await db.query.series.findMany({
+      with: {
+        events: true,
+        contests: true,
+      },
+      orderBy: (series, { desc }) => [desc(series.createdAt)],
+    })
+
+    // Get rankings data
+    const seriesRankings = await getAllSeriesRankings()
+    
+    // Merge rankings data with series data
+    const seriesWithRankings = allSeries.map(seriesData => {
+      const rankingData = seriesRankings.find(s => s.seriesId === seriesData.id)
+      return {
+        ...seriesData,
+        contests: rankingData?.contests || []
+      }
+    })
+
+    return seriesWithRankings
+  } catch (error) {
+    console.error("Error fetching series with rankings:", error)
     return []
   }
 }

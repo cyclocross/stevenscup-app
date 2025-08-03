@@ -18,6 +18,7 @@ interface Series {
   name: string
   season: string
   description?: string | null
+  status?: string | null
 }
 
 interface SeriesActionsProps {

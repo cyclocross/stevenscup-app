@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Medal, ChevronDown, ChevronRight } from "lucide-react"
+import { ChevronDown, ChevronRight, Shirt } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
 interface ParticipantRowProps {
@@ -34,11 +34,8 @@ export function ParticipantRow({ participant, rank }: ParticipantRowProps) {
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white border-2 border-gray-200 text-sm font-semibold">
               {rank}
             </div>
-            {rank <= 3 && (
-              <Medal className={`h-5 w-5 ${
-                rank === 1 ? 'text-yellow-500' : 
-                rank === 2 ? 'text-gray-400' : 'text-orange-600'
-              }`} />
+            {rank === 1 && (
+              <Shirt className="h-4 w-4 text-yellow-500" />
             )}
           </div>
         </td>
@@ -78,12 +75,11 @@ export function ParticipantRow({ participant, rank }: ParticipantRowProps) {
               <h4 className="font-medium text-sm text-gray-700 mb-3">Race Results</h4>
               <div className="space-y-2">
                 {participant.participations.map((participation) => (
-                  <div 
+                  <div
                     key={participation.raceId}
                     className="flex items-center justify-between p-3 bg-white rounded-lg border"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
                       <div>
                         <div className="font-medium text-sm">{participation.eventName}</div>
                         <div className="text-xs text-gray-500">{participation.eventDate}</div>

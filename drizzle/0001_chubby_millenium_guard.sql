@@ -1,0 +1,1 @@
+ALTER TABLE "series" ADD COLUMN "status" varchar(20) DEFAULT 'scheduled';

@@ -33,11 +33,11 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <Link 
-          href="/rankings" 
+          href="/" 
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Rankings
+          Back to Live Rankings
         </Link>
         
         <div className="text-center mb-8">
@@ -78,7 +78,7 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Award className="h-5 w-5" />
-            Contest Rankings
+            Overall Series Rankings
           </CardTitle>
           <CardDescription>
             All participants ranked by total points. For equal points, better last race position determines ranking.

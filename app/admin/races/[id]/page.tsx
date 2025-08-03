@@ -117,10 +117,10 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
           {participations.filter(p => p.finished).length > 0 && (
             <Card>
               <CardHeader>
-                              <CardTitle className="text-lg flex items-center gap-2">
-                <StatusIcon status="finished" />
-                Finished ({participations.filter(p => p.finished).length})
-              </CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <StatusIcon status="finished" />
+                  Finished ({participations.filter(p => p.finished).length})
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -172,10 +172,10 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
           {participations.filter(p => p.started && !p.finished).length > 0 && (
             <Card>
               <CardHeader>
-                              <CardTitle className="text-lg flex items-center gap-2">
-                <StatusIcon status="started" />
-                Started ({participations.filter(p => p.started && !p.finished).length})
-              </CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <StatusIcon status="started" />
+                  Started ({participations.filter(p => p.started && !p.finished).length})
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -223,10 +223,10 @@ export default async function RaceDetailPage({ params }: { params: Promise<{ id:
           {participations.filter(p => p.registered && !p.started && !p.finished).length > 0 && (
             <Card>
               <CardHeader>
-                              <CardTitle className="text-lg flex items-center gap-2">
-                <StatusIcon status="registered" />
-                Registered ({participations.filter(p => p.registered && !p.started && !p.finished).length})
-              </CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <StatusIcon status="registered" />
+                  Registered ({participations.filter(p => p.registered && !p.started && !p.finished).length})
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">

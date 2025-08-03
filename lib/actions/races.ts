@@ -57,6 +57,23 @@ export async function getRacesByEventId(eventId: number) {
   }
 }
 
+export async function getRacesByContestId(contestId: number) {
+  try {
+    const contestRaces = await db.query.races.findMany({
+      where: eq(races.contestId, contestId),
+      with: {
+        event: true,
+        contest: true,
+      },
+      orderBy: (races, { asc }) => [asc(races.startTime)],
+    })
+    return contestRaces
+  } catch (error) {
+    console.error("Error fetching races:", error)
+    return []
+  }
+}
+
 export async function updateRace(id: number, data: Partial<NewRace>) {
   try {
     const [updatedRace] = await db

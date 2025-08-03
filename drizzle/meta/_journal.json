@@ -8,6 +8,13 @@
       "when": 1754384476831,
       "tag": "0000_nasty_iron_lad",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1754630598962,
+      "tag": "0001_chubby_millenium_guard",
+      "breakpoints": true
     }
   ]
 }
