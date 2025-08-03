@@ -15,7 +15,7 @@ export default function NewSeriesPage() {
         <h1 className="text-2xl font-bold">Create New Series</h1>
       </div>
 
-      <SeriesForm />
+      <SeriesForm mode="create" />
     </div>
   )
 }

@@ -9,18 +9,26 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { createContest } from "@/lib/actions/contests"
+import { createContest, updateContest } from "@/lib/actions/contests"
 import { Textarea } from "@/components/ui/textarea"
 
 interface ContestFormProps {
+  mode: "create" | "edit"
   seriesId: number
+  initialData?: {
+    id?: number
+    name: string
+    comment?: string | null
+    seriesId: number
+  }
+  contestId?: number
 }
 
-export function ContestForm({ seriesId }: ContestFormProps) {
+export function ContestForm({ mode, seriesId, initialData, contestId }: ContestFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    name: "",
-    comment: "",
+    name: initialData?.name || "",
+    comment: initialData?.comment || "",
   })
 
   const router = useRouter()
@@ -30,16 +38,30 @@ export function ContestForm({ seriesId }: ContestFormProps) {
     setIsLoading(true)
 
     try {
-      const result = await createContest({
-        ...formData,
-        seriesId,
-      })
+      let result
+
+      if (mode === "create") {
+        result = await createContest({
+          ...formData,
+          seriesId,
+        })
+      } else {
+        if (!contestId) {
+          toast.error("Contest ID is required for editing")
+          return
+        }
+        result = await updateContest(contestId, formData)
+      }
 
       if (result.success) {
-        toast.success("Contest created successfully")
+        toast.success(
+          mode === "create" 
+            ? "Contest created successfully" 
+            : "Contest updated successfully"
+        )
         router.push(`/admin/series/${seriesId}`)
       } else {
-        toast.error(result.error || "Failed to create contest")
+        toast.error(result.error || `Failed to ${mode} contest`)
       }
     } catch {
       toast.error("An unexpected error occurred")
@@ -51,7 +73,9 @@ export function ContestForm({ seriesId }: ContestFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Contest Details</CardTitle>
+        <CardTitle>
+          {mode === "create" ? "Create New Contest" : "Edit Contest"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -75,7 +99,10 @@ export function ContestForm({ seriesId }: ContestFormProps) {
             />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating..." : "Create Contest"}
+            {isLoading 
+              ? (mode === "create" ? "Creating..." : "Updating...") 
+              : (mode === "create" ? "Create Contest" : "Update Contest")
+            }
           </Button>
         </form>
       </CardContent>

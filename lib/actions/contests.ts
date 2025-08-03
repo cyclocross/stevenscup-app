@@ -25,6 +25,25 @@ export async function createContest(data: Omit<NewContest, "id" | "createdAt" | 
   }
 }
 
+export async function getContestById(id: number) {
+  try {
+    const contest = await db.query.contests.findFirst({
+      where: eq(contests.id, id),
+      with: {
+        cyclistContests: {
+          with: {
+            cyclist: true,
+          },
+        },
+      },
+    })
+    return contest
+  } catch (error) {
+    console.error("Error fetching contest:", error)
+    return null
+  }
+}
+
 export async function getContestsBySeriesId(seriesId: number) {
   try {
     const seriesContests = await db.query.contests.findMany({

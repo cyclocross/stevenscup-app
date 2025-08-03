@@ -28,7 +28,7 @@ export default async function NewEventPage({ params }: { params: Promise<{ id: s
         </div>
       </div>
 
-      <EventForm seriesId={seriesId} />
+      <EventForm mode="create" seriesId={seriesId} />
     </div>
   )
 }

@@ -28,7 +28,7 @@ export default async function NewContestPage({ params }: { params: Promise<{ id:
         </div>
       </div>
 
-      <ContestForm seriesId={seriesId} />
+      <ContestForm mode="create" seriesId={seriesId} />
     </div>
   )
 }

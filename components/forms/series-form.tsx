@@ -10,17 +10,20 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { createSeries } from "@/lib/actions/series"
+import { createSeries, updateSeries } from "@/lib/actions/series"
 
 interface SeriesFormProps {
+  mode: "create" | "edit"
   initialData?: {
+    id?: number
     name: string
     season: string
-    description: string
+    description?: string | null
   }
+  seriesId?: number
 }
 
-export function SeriesForm({ initialData }: SeriesFormProps) {
+export function SeriesForm({ mode, initialData, seriesId }: SeriesFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
@@ -35,13 +38,27 @@ export function SeriesForm({ initialData }: SeriesFormProps) {
     setIsLoading(true)
 
     try {
-      const result = await createSeries(formData)
+      let result
+
+      if (mode === "create") {
+        result = await createSeries(formData)
+      } else {
+        if (!seriesId) {
+          toast.error("Series ID is required for editing")
+          return
+        }
+        result = await updateSeries(seriesId, formData)
+      }
 
       if (result.success) {
-        toast.success("Series created successfully")
+        toast.success(
+          mode === "create" 
+            ? "Series created successfully" 
+            : "Series updated successfully"
+        )
         router.push("/admin")
       } else {
-        toast.error(result.error || "Failed to create series")
+        toast.error(result.error || `Failed to ${mode} series`)
       }
     } catch {
       toast.error("An unexpected error occurred")
@@ -53,7 +70,9 @@ export function SeriesForm({ initialData }: SeriesFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Series Details</CardTitle>
+        <CardTitle>
+          {mode === "create" ? "Create New Series" : "Edit Series"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -91,7 +110,10 @@ export function SeriesForm({ initialData }: SeriesFormProps) {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating..." : "Create Series"}
+            {isLoading 
+              ? (mode === "create" ? "Creating..." : "Updating...") 
+              : (mode === "create" ? "Create Series" : "Update Series")
+            }
           </Button>
         </form>
       </CardContent>

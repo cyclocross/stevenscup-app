@@ -25,6 +25,25 @@ export async function createEvent(data: Omit<NewEvent, "id" | "createdAt" | "upd
   }
 }
 
+export async function getEventById(id: number) {
+  try {
+    const event = await db.query.events.findFirst({
+      where: eq(events.id, id),
+      with: {
+        races: {
+          with: {
+            contest: true,
+          },
+        },
+      },
+    })
+    return event
+  } catch (error) {
+    console.error("Error fetching event:", error)
+    return null
+  }
+}
+
 export async function getEventsBySeriesId(seriesId: number) {
   try {
     const seriesEvents = await db.query.events.findMany({

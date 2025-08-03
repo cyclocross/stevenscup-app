@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Calendar, Users, Plus } from "lucide-react"
 import { getSeriesById } from "@/lib/actions/series"
 import { notFound } from "next/navigation"
+import { EventActions } from "@/components/event-actions"
+import { ContestActions } from "@/components/contest-actions"
 
 export default async function SeriesDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -43,14 +45,14 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
           </Link>
         </div>
 
-        {series.events.length === 0 ? (
+        {!series.events || series.events.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-gray-500">No events scheduled yet.</p>
             </CardContent>
           </Card>
         ) : (
-          series.events.map((event) => (
+          series.events.map((event: { id: number; name: string; date: string; location: string; club: string; seriesId: number; races?: unknown[] }) => (
             <Card key={event.id}>
               <CardHeader>
                 <CardTitle className="text-base">{event.name}</CardTitle>
@@ -60,11 +62,14 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-2">{event.races?.length || 0} races scheduled</p>
-                <Link href={`/admin/events/${event.id}`}>
-                  <Button variant="outline" size="sm" className="w-full bg-transparent">
-                    Manage Event
-                  </Button>
-                </Link>
+                <div className="flex gap-2">
+                  <Link href={`/admin/events/${event.id}/races`} className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full bg-transparent">
+                      Manage Races
+                    </Button>
+                  </Link>
+                  <EventActions event={event} />
+                </div>
               </CardContent>
             </Card>
           ))
@@ -86,14 +91,14 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
           </Link>
         </div>
 
-        {series.contests.length === 0 ? (
+        {!series.contests || series.contests.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-gray-500">No contests created yet.</p>
             </CardContent>
           </Card>
         ) : (
-          series.contests.map((contest) => (
+          series.contests.map((contest: { id: number; name: string; comment?: string | null; seriesId: number; cyclistContests?: unknown[] }) => (
             <Card key={contest.id}>
               <CardHeader>
                 <CardTitle className="text-base">{contest.name}</CardTitle>
@@ -103,11 +108,14 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-2">{contest.cyclistContests?.length || 0} cyclists registered</p>
-                <Link href={`/admin/contests/${contest.id}`}>
-                  <Button variant="outline" size="sm" className="w-full bg-transparent">
-                    Manage Contest
-                  </Button>
-                </Link>
+                <div className="flex gap-2">
+                  <Link href={`/admin/contests/${contest.id}`} className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full bg-transparent">
+                      Manage Contest
+                    </Button>
+                  </Link>
+                  <ContestActions contest={contest} />
+                </div>
               </CardContent>
             </Card>
           ))

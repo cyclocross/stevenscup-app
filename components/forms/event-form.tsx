@@ -9,19 +9,29 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { createEvent } from "@/lib/actions/events"
+import { createEvent, updateEvent } from "@/lib/actions/events"
 
 interface EventFormProps {
+  mode: "create" | "edit"
   seriesId: number
+  initialData?: {
+    id?: number
+    name: string
+    date: string
+    location: string
+    club: string
+    seriesId: number
+  }
+  eventId?: number
 }
 
-export function EventForm({ seriesId }: EventFormProps) {
+export function EventForm({ mode, seriesId, initialData, eventId }: EventFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    name: "",
-    date: "",
-    location: "",
-    club: "",
+    name: initialData?.name || "",
+    date: initialData?.date || "",
+    location: initialData?.location || "",
+    club: initialData?.club || "",
   })
 
   const router = useRouter()
@@ -31,16 +41,30 @@ export function EventForm({ seriesId }: EventFormProps) {
     setIsLoading(true)
 
     try {
-      const result = await createEvent({
-        ...formData,
-        seriesId,
-      })
+      let result
+
+      if (mode === "create") {
+        result = await createEvent({
+          ...formData,
+          seriesId,
+        })
+      } else {
+        if (!eventId) {
+          toast.error("Event ID is required for editing")
+          return
+        }
+        result = await updateEvent(eventId, formData)
+      }
 
       if (result.success) {
-        toast.success("Event created successfully")
+        toast.success(
+          mode === "create" 
+            ? "Event created successfully" 
+            : "Event updated successfully"
+        )
         router.push(`/admin/series/${seriesId}`)
       } else {
-        toast.error(result.error || "Failed to create event")
+        toast.error(result.error || `Failed to ${mode} event`)
       }
     } catch {
       toast.error("An unexpected error occurred")
@@ -52,7 +76,9 @@ export function EventForm({ seriesId }: EventFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Event Details</CardTitle>
+        <CardTitle>
+          {mode === "create" ? "Create New Event" : "Edit Event"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -101,7 +127,10 @@ export function EventForm({ seriesId }: EventFormProps) {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating..." : "Create Event"}
+            {isLoading 
+              ? (mode === "create" ? "Creating..." : "Updating...") 
+              : (mode === "create" ? "Create Event" : "Update Event")
+            }
           </Button>
         </form>
       </CardContent>

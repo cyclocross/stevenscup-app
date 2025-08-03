@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Calendar, Users, Plus } from "lucide-react"
 import { getAllSeries } from "@/lib/actions/series"
+import { SeriesActions } from "@/components/series-actions"
 
 export default async function AdminPage() {
   const allSeries = await getAllSeries()
@@ -59,11 +60,14 @@ export default async function AdminPage() {
                     {series.contests?.length || 0} contests
                   </span>
                 </div>
-                <Link href={`/admin/series/${series.id}`}>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    Manage Series
-                  </Button>
-                </Link>
+                <div className="flex gap-2">
+                  <Link href={`/admin/series/${series.id}`} className="flex-1">
+                    <Button variant="outline" className="w-full bg-transparent">
+                      Manage Series
+                    </Button>
+                  </Link>
+                  <SeriesActions series={series} />
+                </div>
               </CardContent>
             </Card>
           ))
