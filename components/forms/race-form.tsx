@@ -2,16 +2,16 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { toast } from "sonner"
-import { createRace, updateRace } from "@/lib/actions/races"
 import { getContestsBySeriesId } from "@/lib/actions/contests"
+import { createRace, updateRace } from "@/lib/actions/races"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface RaceFormProps {
   mode: "create" | "edit"
@@ -66,7 +66,6 @@ export function RaceForm({ mode, eventId, seriesId, initialData, raceId }: RaceF
           eventId,
           contestId: formData.contestId,
           startTime: formData.startTime || null,
-          duration: formData.duration || null,
           status: formData.status,
         })
       } else {
@@ -77,15 +76,14 @@ export function RaceForm({ mode, eventId, seriesId, initialData, raceId }: RaceF
         result = await updateRace(raceId, {
           contestId: formData.contestId,
           startTime: formData.startTime || null,
-          duration: formData.duration || null,
           status: formData.status,
         })
       }
 
       if (result.success) {
         toast.success(
-          mode === "create" 
-            ? "Race created successfully" 
+          mode === "create"
+            ? "Race created successfully"
             : "Race updated successfully"
         )
         router.push(`/admin/events/${eventId}/races`)
@@ -167,8 +165,8 @@ export function RaceForm({ mode, eventId, seriesId, initialData, raceId }: RaceF
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading || formData.contestId === 0}>
-            {isLoading 
-              ? (mode === "create" ? "Creating..." : "Updating...") 
+            {isLoading
+              ? (mode === "create" ? "Creating..." : "Updating...")
               : (mode === "create" ? "Create Race" : "Update Race")
             }
           </Button>

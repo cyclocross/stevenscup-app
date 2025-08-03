@@ -49,11 +49,7 @@ export async function getContestsBySeriesId(seriesId: number) {
     const seriesContests = await db.query.contests.findMany({
       where: eq(contests.seriesId, seriesId),
       with: {
-        cyclistContests: {
-          with: {
-            cyclist: true,
-          },
-        },
+        participants: true,
       },
       orderBy: (contests, { asc }) => [asc(contests.name)],
     })

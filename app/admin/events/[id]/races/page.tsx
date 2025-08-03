@@ -89,10 +89,10 @@ export default async function EventRacesPage({ params }: EventRacesPageProps) {
                     <Clock className="h-4 w-4" />
                     {formatTime(race.startTime)}
                   </span>
-                  {race.duration && (
+                  {race.contest?.duration && (
                     <span className="flex items-center gap-1">
                       <Users className="h-4 w-4" />
-                      {race.duration} min
+                      {race.contest.duration} min
                     </span>
                   )}
                 </CardDescription>

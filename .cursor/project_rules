@@ -19,3 +19,8 @@ The app follows this hierarchy: Series → Events → Contests → Races
 - Use TypeScript for type safety
 - Leverage Drizzle ORM for database operations
 - Ensure responsive design for mobile devices 
+
+## Documentation
+Documentation follows the idea of ADR (architecture design record). For every major change to the project there is a numbered and dated document in `docs/adr`. There is no formal review or ADR status now.
+ - when working with Cursor prompt, next document can hold the summary of the prompt(s) and solution
+ - document should be concise, it is intended to be read in the future to unterstand the development path 

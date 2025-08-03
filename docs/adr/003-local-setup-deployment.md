@@ -1,5 +1,7 @@
 # Local environment
 
+Date: 02.08.2025 10:00
+
 In the early project phase there is only a production postgres database, started at Neon and linked to Vercel deployment.
 
 Local server and production server share the same database. Development is on `main` branch.

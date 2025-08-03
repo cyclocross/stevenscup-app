@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, text, timestamp, integer, date, time } from "drizzle-orm/pg-core"
+import { pgTable, serial, varchar, text, timestamp, integer, date, time, unique, boolean } from "drizzle-orm/pg-core"
 import { relations } from "drizzle-orm"
 
 // Series table
@@ -32,7 +32,9 @@ export const contests = pgTable("contests", {
     .references(() => series.id)
     .notNull(),
   name: varchar("name", { length: 255 }).notNull(),
-  ageGroup: varchar("age_group", { length: 50 }),
+  duration: integer("duration_minutes"),
+  birthYearFrom: integer("birth_year_from"),
+  birthYearTo: integer("birth_year_to"),
   gender: varchar("gender", { length: 10 }),
   participationPoints: integer("participation_points").default(1),
   group: varchar("group", { length: 255 }),
@@ -51,36 +53,48 @@ export const races = pgTable("races", {
     .references(() => contests.id)
     .notNull(),
   startTime: time("start_time"),
-  duration: integer("duration_minutes"),
   status: varchar("status", { length: 20 }).default("scheduled"), // scheduled, ongoing, completed
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
 
-// Cyclists table
-export const cyclists = pgTable("cyclists", {
+// Participants table
+export const participants = pgTable("participants", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  club: varchar("club", { length: 255 }),
-  licenseNumber: varchar("license_number", { length: 50 }),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-})
-
-// Cyclist Contest relationship (fixed bib number per contest)
-export const cyclistContests = pgTable("cyclist_contests", {
-  id: serial("id").primaryKey(),
-  cyclistId: integer("cyclist_id")
-    .references(() => cyclists.id)
-    .notNull(),
   contestId: integer("contest_id")
     .references(() => contests.id)
     .notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  birthYear: integer("birth_year").notNull(),
+  gender: varchar("gender", { length: 10 }).notNull(),
+  club: varchar("club", { length: 255 }),
+  team: varchar("team", { length: 255 }),
+  licenseNumber: varchar("license_number", { length: 50 }),
   bibNumber: integer("bib_number").notNull(),
   status: varchar("status", { length: 20 }).default("registered"), // registered, active, withdrawn
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
+
+// Participations table
+export const participations = pgTable("participations", {
+  id: serial("id").primaryKey(),
+  participantId: integer("participant_id")
+    .references(() => participants.id)
+    .notNull(),
+  raceId: integer("race_id")
+    .references(() => races.id)
+    .notNull(),
+  registered: boolean("registered").default(false),
+  started: boolean("started").default(false),
+  finished: boolean("finished").default(false),
+  position: integer("position"),
+  isProvisional: boolean("is_provisional").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  uniqueParticipation: unique().on(table.participantId, table.raceId),
+}))
 
 // Relations
 export const seriesRelations = relations(series, ({ many }) => ({
@@ -102,10 +116,10 @@ export const contestsRelations = relations(contests, ({ one, many }) => ({
     references: [series.id],
   }),
   races: many(races),
-  cyclistContests: many(cyclistContests),
+  participants: many(participants),
 }))
 
-export const racesRelations = relations(races, ({ one }) => ({
+export const racesRelations = relations(races, ({ one, many }) => ({
   event: one(events, {
     fields: [races.eventId],
     references: [events.id],
@@ -114,19 +128,24 @@ export const racesRelations = relations(races, ({ one }) => ({
     fields: [races.contestId],
     references: [contests.id],
   }),
+  participations: many(participations),
 }))
 
-export const cyclistsRelations = relations(cyclists, ({ many }) => ({
-  cyclistContests: many(cyclistContests),
-}))
-
-export const cyclistContestsRelations = relations(cyclistContests, ({ one }) => ({
-  cyclist: one(cyclists, {
-    fields: [cyclistContests.cyclistId],
-    references: [cyclists.id],
-  }),
+export const participantsRelations = relations(participants, ({ one, many }) => ({
   contest: one(contests, {
-    fields: [cyclistContests.contestId],
+    fields: [participants.contestId],
     references: [contests.id],
+  }),
+  participations: many(participations),
+}))
+
+export const participationsRelations = relations(participations, ({ one }) => ({
+  participant: one(participants, {
+    fields: [participations.participantId],
+    references: [participants.id],
+  }),
+  race: one(races, {
+    fields: [participations.raceId],
+    references: [races.id],
   }),
 }))

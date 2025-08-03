@@ -55,15 +55,7 @@ export async function getSeriesById(id: number) {
             },
           },
         },
-        contests: {
-          with: {
-            cyclistContests: {
-              with: {
-                cyclist: true,
-              },
-            },
-          },
-        },
+        contests: true,
       },
     })
     return seriesData

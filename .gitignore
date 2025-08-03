@@ -43,5 +43,3 @@ next-env.d.ts
 
 /lib/generated/prisma
 
-# drizzle generated sql
-.drizzle

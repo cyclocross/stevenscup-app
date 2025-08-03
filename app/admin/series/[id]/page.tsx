@@ -45,7 +45,7 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
           </Link>
         </div>
 
-        {!series.events || series.events.length === 0 ? (
+        {series.events === undefined || series.events.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-gray-500">No events scheduled yet.</p>
