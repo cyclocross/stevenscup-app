@@ -1,3 +1,4 @@
+import { LiveUpdates } from "@/components/live-updates"
 import { ParticipantRow } from "@/components/participant-row"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -119,6 +120,7 @@ export default async function ContestDetailPage({ params }: ContestDetailPagePro
           )}
         </CardContent>
       </Card>
+      <LiveUpdates />
     </div>
   )
 }

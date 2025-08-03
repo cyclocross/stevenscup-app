@@ -1,10 +1,10 @@
 "use server"
 
 import { db } from "@/lib/db"
-import { participants, participations } from "@/lib/db/schema"
+import { participants, participations, races } from "@/lib/db/schema"
+import { notifyRaceUpdate } from "@/lib/utils/sse"
 import { and, eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
-import { notifyRaceUpdate } from "@/lib/utils/sse"
 
 export type Participation = typeof participations.$inferSelect
 export type NewParticipation = typeof participations.$inferInsert
@@ -89,10 +89,11 @@ export async function assignParticipantToRace(participantId: number, raceId: num
             .returning()
 
         revalidatePath(`/admin/races/${raceId}`)
-        
+        revalidatePath(`/`)
+
         // Notify SSE clients of the update
         await notifyRaceUpdate(raceId)
-        
+
         return { data: result[0], error: null }
     } catch {
         return { data: null, error: "Failed to assign participant to race" }
@@ -109,10 +110,11 @@ export async function removeParticipantFromRace(participantId: number, raceId: n
             ))
 
         revalidatePath(`/admin/races/${raceId}`)
-        
+        revalidatePath(`/`)
+
         // Notify SSE clients of the update
         await notifyRaceUpdate(raceId)
-        
+
         return { error: null }
     } catch {
         return { error: "Failed to remove participant from race" }
@@ -128,12 +130,13 @@ export async function updateParticipation(participationId: number, data: Partial
             .returning()
 
         revalidatePath(`/admin/races/${result[0]?.raceId}`)
-        
+        revalidatePath(`/`)
+
         // Notify SSE clients of the update
         if (result[0]?.raceId) {
-          await notifyRaceUpdate(result[0].raceId)
+            await notifyRaceUpdate(result[0].raceId)
         }
-        
+
         return { data: result[0], error: null }
     } catch {
         return { data: null, error: "Failed to update participation" }
@@ -207,12 +210,13 @@ export async function cycleParticipationStatus(participationId: number) {
         }
 
         revalidatePath(`/admin/races/${result[0]?.raceId}`)
-        
+        revalidatePath(`/`)
+
         // Notify SSE clients of the update
         if (result[0]?.raceId) {
-          await notifyRaceUpdate(result[0].raceId)
+            await notifyRaceUpdate(result[0].raceId)
         }
-        
+
         return { data: result[0], error: null }
     } catch {
         return { data: null, error: "Failed to cycle participation status" }
@@ -224,6 +228,7 @@ export async function moveParticipationUp(participationId: number) {
         const participation = await db
             .select()
             .from(participations)
+            .innerJoin(races, eq(participations.raceId, races.id))
             .where(eq(participations.id, participationId))
             .limit(1)
 
@@ -231,7 +236,8 @@ export async function moveParticipationUp(participationId: number) {
             return { data: null, error: "Participation not found" }
         }
 
-        const current = participation[0]
+        const current = participation[0].participations
+        const race = participation[0].races
 
         // Only allow moving finished participations
         if (!current.finished) {
@@ -268,11 +274,13 @@ export async function moveParticipationUp(participationId: number) {
             .set({ position: previousParticipation.position, updatedAt: new Date() })
             .where(eq(participations.id, participationId))
 
+        revalidatePath(`/rankings/contest/${race.contestId}`)
         revalidatePath(`/admin/races/${current.raceId}`)
-        
+        revalidatePath(`/`)
+
         // Notify SSE clients of the update
         await notifyRaceUpdate(current.raceId)
-        
+
         return { data: current, error: null }
     } catch {
         return { data: null, error: "Failed to move participation up" }
@@ -284,6 +292,7 @@ export async function moveParticipationDown(participationId: number) {
         const participation = await db
             .select()
             .from(participations)
+            .innerJoin(races, eq(participations.raceId, races.id))
             .where(eq(participations.id, participationId))
             .limit(1)
 
@@ -291,7 +300,8 @@ export async function moveParticipationDown(participationId: number) {
             return { data: null, error: "Participation not found" }
         }
 
-        const current = participation[0]
+        const current = participation[0].participations
+        const race = participation[0].races
 
         // Only allow moving finished participations
         if (!current.finished) {
@@ -328,11 +338,13 @@ export async function moveParticipationDown(participationId: number) {
             .set({ position: nextParticipation.position, updatedAt: new Date() })
             .where(eq(participations.id, participationId))
 
+        revalidatePath(`/rankings/contest/${race.contestId}`)
         revalidatePath(`/admin/races/${current.raceId}`)
-        
+        revalidatePath(`/`)
+
         // Notify SSE clients of the update
         await notifyRaceUpdate(current.raceId)
-        
+
         return { data: current, error: null }
     } catch {
         return { data: null, error: "Failed to move participation down" }
@@ -364,9 +376,10 @@ export async function reorderFinishedParticipations(raceId: number) {
             }
         }
 
-        // Notify SSE clients of the update
+        // Revalidate home page and notify SSE clients of the update
+        revalidatePath(`/`)
         await notifyRaceUpdate(raceId)
-        
+
         return { error: null }
     } catch {
         return { error: "Failed to reorder finished participations" }
@@ -384,12 +397,12 @@ export async function pointsForParticipation(participation: {
     // Base points for participation
     if (participation.started) points += 2
 
-    const pointsforPosition = [ 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1 ];
+    const pointsforPosition = [20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1];
 
     // Position points for finished participations
     if (participation.finished && participation.position) {
         // Position 1 gets 10 points, position 2 gets 9 points, etc.
-        if(participation.position >= 1 && participation.position <= pointsforPosition.length) {
+        if (participation.position >= 1 && participation.position <= pointsforPosition.length) {
             points += pointsforPosition[participation.position - 1]
         }
     }

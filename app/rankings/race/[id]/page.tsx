@@ -1,3 +1,4 @@
+import { LiveUpdates } from "@/components/live-updates"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatusIcon } from "@/components/ui/status-icon"
 import { getParticipationsByRace, pointsForParticipation } from "@/lib/actions/participations"
@@ -203,6 +204,7 @@ export default async function RaceRankingsPage({ params }: RaceRankingsPageProps
             </div>
           </CardContent>
         </Card>
+        <LiveUpdates />
       </div>
     </div>
   )
