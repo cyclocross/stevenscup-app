@@ -63,8 +63,7 @@ export default async function EditContestPage({ params }: EditContestPageProps) 
             mode="edit" 
             initialData={{
               ...contest,
-              comment: contest.comment || undefined,
-              participantsUrl: contest.participantsUrl || undefined
+              comment: contest.comment || undefined
             }}
             contestId={contestId}
             seriesId={contest.seriesId}

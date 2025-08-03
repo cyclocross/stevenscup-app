@@ -193,7 +193,6 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
             id: number;
             name: string;
             comment?: string | null;
-            participantsUrl?: string | null;
             seriesId: number;
             participants?: Array<{
               id: number;
@@ -206,18 +205,6 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
                 <CardTitle className="text-base">{contest.name}</CardTitle>
                 <CardDescription>
                   {contest.comment && <>{contest.comment}</>}
-                  {contest.participantsUrl && (
-                    <div className="mt-2">
-                      <a
-                        href={contest.participantsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 underline"
-                      >
-                        RaceResult Participants
-                      </a>
-                    </div>
-                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -229,20 +216,6 @@ export default async function SeriesDetailPage({ params }: { params: Promise<{ i
                       Participants
                     </Button>
                   </Link>
-                  {contest.participantsUrl && (
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="bg-blue-50 text-blue-700 hover:bg-blue-100"
-                      onClick={() => {
-                        // TODO: Implement participants import
-                        alert(`Import participants from: ${contest.participantsUrl}`)
-                      }}
-                    >
-                      <Download className="h-4 w-4 mr-1" />
-                      Import
-                    </Button>
-                  )}
                   <ContestActions contest={contest} />
                 </div>
               </CardContent>

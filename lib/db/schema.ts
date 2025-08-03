@@ -44,7 +44,6 @@ export const contests = pgTable("contests", {
   participationPoints: integer("participation_points").default(1),
   group: varchar("group", { length: 255 }),
   comment: text("comment"),
-  participantsUrl: text("participants_url"),
   // externalId: varchar("external_id", { length: 100 }),
   // category: varchar("category", { length: 255 }),
   // ageRange: varchar("age_range", { length: 100 }),

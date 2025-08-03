@@ -57,6 +57,13 @@
       "when": 1756479869975,
       "tag": "0008_soft_tomorrow_man",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1756480633952,
+      "tag": "0009_brainy_serpent_society",
+      "breakpoints": true
     }
   ]
 }
