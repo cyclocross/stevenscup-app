@@ -99,9 +99,11 @@ export default async function EventRacesPage({ params }: EventRacesPageProps) {
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 bg-transparent">
-                    View Details
-                  </Button>
+                  <Link href={`/admin/races/${race.id}`} className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full bg-transparent">
+                      Manage Participants
+                    </Button>
+                  </Link>
                   <RaceActions race={race} />
                 </div>
               </CardContent>
